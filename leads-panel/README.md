@@ -36,6 +36,34 @@ npm run dev
 
 Panel: `http://localhost:3000`
 
+## Deploy en Coolify
+
+Configurar el resource como app Node con:
+
+```text
+Root directory: leads-panel
+Install command: npm ci
+Start command: npm start
+Port: 3000
+Health check path: /health
+```
+
+Variables requeridas:
+
+```env
+NODE_ENV=production
+PORT=3000
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+INTERNAL_API_KEY=
+ADMIN_USERNAME=
+ADMIN_PASSWORD=
+SESSION_SECRET=
+LANDING_ORIGIN=https://tu-dominio-landing.com
+```
+
+`SESSION_SECRET` debe tener al menos 24 caracteres. `LANDING_ORIGIN` debe ser el origen exacto de la landing, sin path final.
+
 ## API
 
 ### Crear lead
