@@ -46,6 +46,7 @@
                 <button class="filter" type="button" data-status="new">Nuevos</button>
                 <button class="filter" type="button" data-status="contacted">Contactados</button>
                 <button class="filter" type="button" data-status="closed">Cerrados</button>
+                <button id="copySelectedBtn" class="secondary bulk-action" type="button" disabled>Copiar seleccionados</button>
             </div>
 
             <p id="panelError" class="error hidden"></p>
@@ -55,6 +56,9 @@
                 <table>
                     <thead>
                         <tr>
+                            <th class="select-col">
+                                <input id="selectAllLeads" type="checkbox" aria-label="Seleccionar todos los leads">
+                            </th>
                             <th>Fecha</th>
                             <th>Contacto</th>
                             <th>Lesion</th>

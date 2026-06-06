@@ -56,6 +56,14 @@ button.secondary:hover,
     background: var(--soft);
 }
 
+button:disabled,
+button:disabled:hover {
+    border-color: var(--line);
+    background: #eef0f2;
+    color: var(--muted);
+    cursor: not-allowed;
+}
+
 .app-shell {
     width: min(1180px, calc(100% - 32px));
     margin: 0 auto;
@@ -117,6 +125,13 @@ select {
     background: white;
 }
 
+input[type="checkbox"] {
+    width: 18px;
+    min-height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
 input:focus,
 select:focus,
 button:focus-visible {
@@ -143,9 +158,19 @@ button:focus-visible {
     margin-bottom: 16px;
 }
 
+.bulk-action {
+    margin-left: auto;
+}
+
 .error {
     margin: 0;
     color: var(--danger);
+    font-weight: 700;
+}
+
+.notice {
+    margin: 0;
+    color: var(--primary);
     font-weight: 700;
 }
 
@@ -167,7 +192,7 @@ button:focus-visible {
 
 table {
     width: 100%;
-    min-width: 940px;
+    min-width: 1040px;
     border-collapse: collapse;
 }
 
@@ -185,6 +210,11 @@ th {
     text-transform: uppercase;
     letter-spacing: 0;
     background: #fafbfc;
+}
+
+.select-col {
+    width: 42px;
+    text-align: center;
 }
 
 td {
@@ -214,6 +244,19 @@ tbody tr:last-child td {
     min-width: 132px;
 }
 
+.row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.compact {
+    min-height: 34px;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+}
+
 @media (max-width: 720px) {
     .panel-header {
         align-items: stretch;
@@ -222,5 +265,10 @@ tbody tr:last-child td {
 
     .header-actions button {
         flex: 1;
+    }
+
+    .bulk-action {
+        margin-left: 0;
+        width: 100%;
     }
 }

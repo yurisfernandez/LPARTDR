@@ -7,9 +7,13 @@ const refreshBtn = document.getElementById('refreshBtn');
 const panelError = document.getElementById('panelError');
 const emptyState = document.getElementById('emptyState');
 const leadsTable = document.getElementById('leadsTable');
+const selectAllLeads = document.getElementById('selectAllLeads');
+const copySelectedBtn = document.getElementById('copySelectedBtn');
 const filters = [...document.querySelectorAll('.filter')];
 
 let currentStatus = '';
+let currentLeads = [];
+const selectedLeadIds = new Set();
 
 function showPanel() {
     loginView.classList.add('hidden');
@@ -40,7 +44,73 @@ function cleanPhone(phone) {
     return String(phone || '').replace(/\D/g, '');
 }
 
+function periodLabel(tiempo) {
+    return tiempo === 'menos18' ? 'Menos de 18 meses' : 'Mas de 18 meses';
+}
+
+function laboralLabel(enBlanco) {
+    return enBlanco === 'si' ? 'En blanco' : 'En negro';
+}
+
+function formatLeadForWhatsapp(lead) {
+    return [
+        `Nombre: ${lead.nombre || ''}`,
+        `Telefono: ${lead.telefono || ''}`,
+        `Lesion: ${lead.lesion || ''}`,
+        `Periodo: ${periodLabel(lead.tiempo)}`,
+        `Situacion laboral: ${laboralLabel(lead.en_blanco)}`
+    ].join('\n');
+}
+
+function getLeadById(id) {
+    return currentLeads.find((lead) => String(lead.id) === String(id));
+}
+
+function updateSelectionControls() {
+    const visibleLeadIds = currentLeads.map((lead) => String(lead.id));
+    const selectedVisibleCount = visibleLeadIds.filter((id) => selectedLeadIds.has(id)).length;
+
+    copySelectedBtn.disabled = selectedVisibleCount === 0;
+    copySelectedBtn.textContent = selectedVisibleCount > 0
+        ? `Copiar seleccionados (${selectedVisibleCount})`
+        : 'Copiar seleccionados';
+
+    selectAllLeads.checked = visibleLeadIds.length > 0 && selectedVisibleCount === visibleLeadIds.length;
+    selectAllLeads.indeterminate = selectedVisibleCount > 0 && selectedVisibleCount < visibleLeadIds.length;
+    selectAllLeads.disabled = visibleLeadIds.length === 0;
+}
+
+async function copyText(text, successMessage = 'Texto copiado.') {
+    try {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(text);
+        } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            textarea.remove();
+        }
+
+        panelError.textContent = successMessage;
+        panelError.classList.remove('error');
+        panelError.classList.add('notice');
+        panelError.classList.remove('hidden');
+    } catch (error) {
+        panelError.textContent = 'No se pudo copiar el texto.';
+        panelError.classList.remove('notice');
+        panelError.classList.add('error');
+        panelError.classList.remove('hidden');
+    }
+}
+
 function renderLeads(leads) {
+    currentLeads = leads;
+    selectedLeadIds.clear();
     leadsTable.innerHTML = '';
     emptyState.classList.toggle('hidden', leads.length > 0);
 
@@ -48,8 +118,12 @@ function renderLeads(leads) {
         const phone = cleanPhone(lead.telefono);
         const whatsappUrl = phone ? `https://wa.me/54${phone}` : '#';
         const row = document.createElement('tr');
+        const leadId = escapeHtml(lead.id);
 
         row.innerHTML = `
+            <td class="select-col">
+                <input class="lead-checkbox" type="checkbox" data-id="${leadId}" aria-label="Seleccionar lead de ${escapeHtml(lead.nombre)}">
+            </td>
             <td>
                 <strong>${formatDate(lead.created_at)}</strong>
                 <div class="muted">${lead.ip || ''}</div>
@@ -62,25 +136,32 @@ function renderLeads(leads) {
             </td>
             <td>${escapeHtml(lead.lesion)}</td>
             <td>
-                <strong>${lead.en_blanco === 'si' ? 'En blanco' : 'En negro'}</strong>
-                <div class="muted">${lead.tiempo === 'menos18' ? 'Menos de 18 meses' : 'Mas de 18 meses'}</div>
+                <strong>${laboralLabel(lead.en_blanco)}</strong>
+                <div class="muted">${periodLabel(lead.tiempo)}</div>
             </td>
             <td>
                 ${escapeHtml(lead.source || '')}
                 <div class="muted">${escapeHtml(lead.user_agent || '')}</div>
             </td>
             <td>
-                <select class="status-select" data-id="${lead.id}">
+                <select class="status-select" data-id="${leadId}">
                     <option value="new"${lead.status === 'new' ? ' selected' : ''}>Nuevo</option>
                     <option value="contacted"${lead.status === 'contacted' ? ' selected' : ''}>Contactado</option>
                     <option value="closed"${lead.status === 'closed' ? ' selected' : ''}>Cerrado</option>
                 </select>
             </td>
-            <td><a class="whatsapp" href="${whatsappUrl}" target="_blank" rel="noreferrer">WhatsApp</a></td>
+            <td>
+                <div class="row-actions">
+                    <a class="whatsapp" href="${whatsappUrl}" target="_blank" rel="noreferrer">WhatsApp</a>
+                    <button class="copy-lead-btn secondary compact" type="button" data-id="${leadId}">Copiar datos</button>
+                </div>
+            </td>
         `;
 
         leadsTable.appendChild(row);
     }
+
+    updateSelectionControls();
 }
 
 function escapeHtml(value) {
@@ -113,6 +194,8 @@ async function fetchJson(url, options = {}) {
 
 async function loadLeads() {
     panelError.classList.add('hidden');
+    panelError.classList.remove('notice');
+    panelError.classList.add('error');
     const query = currentStatus ? `?status=${encodeURIComponent(currentStatus)}` : '';
 
     try {
@@ -165,6 +248,19 @@ filters.forEach((button) => {
 });
 
 leadsTable.addEventListener('change', async (event) => {
+    if (event.target.matches('.lead-checkbox')) {
+        const leadId = String(event.target.dataset.id);
+
+        if (event.target.checked) {
+            selectedLeadIds.add(leadId);
+        } else {
+            selectedLeadIds.delete(leadId);
+        }
+
+        updateSelectionControls();
+        return;
+    }
+
     if (!event.target.matches('.status-select')) return;
 
     const select = event.target;
@@ -181,6 +277,42 @@ leadsTable.addEventListener('change', async (event) => {
     } finally {
         select.disabled = false;
     }
+});
+
+leadsTable.addEventListener('click', async (event) => {
+    const button = event.target.closest('.copy-lead-btn');
+    if (!button) return;
+
+    const lead = getLeadById(button.dataset.id);
+    if (!lead) return;
+
+    await copyText(formatLeadForWhatsapp(lead), 'Lead copiado.');
+});
+
+selectAllLeads.addEventListener('change', () => {
+    const visibleLeadIds = currentLeads.map((lead) => String(lead.id));
+
+    for (const id of visibleLeadIds) {
+        if (selectAllLeads.checked) {
+            selectedLeadIds.add(id);
+        } else {
+            selectedLeadIds.delete(id);
+        }
+    }
+
+    leadsTable.querySelectorAll('.lead-checkbox').forEach((checkbox) => {
+        checkbox.checked = selectAllLeads.checked;
+    });
+
+    updateSelectionControls();
+});
+
+copySelectedBtn.addEventListener('click', async () => {
+    const selectedLeads = currentLeads.filter((lead) => selectedLeadIds.has(String(lead.id)));
+    if (selectedLeads.length === 0) return;
+
+    const text = selectedLeads.map(formatLeadForWhatsapp).join('\n\n------\n\n');
+    await copyText(text, `${selectedLeads.length} leads copiados.`);
 });
 
 loadLeads();
