@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Leads</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <main class="app-shell">
+        <section id="loginView" class="login-view">
+            <form id="loginForm" class="login-card">
+                <div>
+                    <p class="eyebrow">Panel interno</p>
+                    <h1>Leads ART</h1>
+                </div>
+                <label>
+                    Usuario
+                    <input id="username" name="username" type="text" autocomplete="username" required>
+                </label>
+                <label>
+                    Contrasena
+                    <input id="password" name="password" type="password" autocomplete="current-password" required>
+                </label>
+                <p id="loginError" class="error hidden">Credenciales invalidas.</p>
+                <button type="submit">Ingresar</button>
+            </form>
+        </section>
+
+        <section id="panelView" class="panel-view hidden">
+            <header class="panel-header">
+                <div>
+                    <p class="eyebrow">Panel interno</p>
+                    <h1>Leads recibidos</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="refreshBtn" type="button">Actualizar</button>
+                    <button id="logoutBtn" type="button" class="secondary">Salir</button>
+                </div>
+            </header>
+
+            <div class="toolbar" role="group" aria-label="Filtro por estado">
+                <button class="filter active" type="button" data-status="">Todos</button>
+                <button class="filter" type="button" data-status="new">Nuevos</button>
+                <button class="filter" type="button" data-status="contacted">Contactados</button>
+                <button class="filter" type="button" data-status="closed">Cerrados</button>
+            </div>
+
+            <p id="panelError" class="error hidden"></p>
+            <div id="emptyState" class="empty hidden">No hay leads para este filtro.</div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Contacto</th>
+                            <th>Lesion</th>
+                            <th>Calificacion</th>
+                            <th>Origen</th>
+                            <th>Estado</th>
+                            <th>Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leadsTable"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="/app.js"></script>
+</body>
+
+</html>

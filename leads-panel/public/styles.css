@@ -1,0 +1,226 @@
+:root {
+    --bg: #f5f6f7;
+    --surface: #ffffff;
+    --ink: #1f2933;
+    --muted: #66727f;
+    --line: #d9dee4;
+    --primary: #1d5f5a;
+    --primary-dark: #164c48;
+    --danger: #b42318;
+    --soft: #eef2f2;
+    --radius: 8px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    min-height: 40px;
+    border: 1px solid var(--primary);
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--primary-dark);
+}
+
+button.secondary,
+.filter {
+    background: white;
+    color: var(--ink);
+    border-color: var(--line);
+}
+
+button.secondary:hover,
+.filter:hover,
+.filter.active {
+    background: var(--soft);
+}
+
+.app-shell {
+    width: min(1180px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 32px 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.login-view {
+    min-height: calc(100vh - 64px);
+    display: grid;
+    place-items: center;
+}
+
+.login-card {
+    width: min(420px, 100%);
+    display: grid;
+    gap: 18px;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 12px 34px rgb(31 41 51 / 0.08);
+}
+
+.eyebrow {
+    margin: 0 0 4px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    line-height: 1.15;
+}
+
+label {
+    display: grid;
+    gap: 7px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+input,
+select {
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 9px 11px;
+    color: var(--ink);
+    background: white;
+}
+
+input:focus,
+select:focus,
+button:focus-visible {
+    outline: 3px solid rgb(29 95 90 / 0.2);
+    outline-offset: 2px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.header-actions,
+.toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.toolbar {
+    margin-bottom: 16px;
+}
+
+.error {
+    margin: 0;
+    color: var(--danger);
+    font-weight: 700;
+}
+
+.empty {
+    padding: 32px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--muted);
+    text-align: center;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+
+table {
+    width: 100%;
+    min-width: 940px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    background: #fafbfc;
+}
+
+td {
+    font-size: 0.92rem;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.contact {
+    display: grid;
+    gap: 4px;
+}
+
+.whatsapp {
+    color: var(--primary);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.status-select {
+    min-width: 132px;
+}
+
+@media (max-width: 720px) {
+    .panel-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .header-actions button {
+        flex: 1;
+    }
+}

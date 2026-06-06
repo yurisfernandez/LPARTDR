@@ -1,0 +1,10 @@
+{
+  "name": "lp-art-dr-landing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/generate-landing-config.js",
+    "build:landing": "node scripts/generate-landing-config.js"
+  }
+}
