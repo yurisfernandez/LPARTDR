@@ -133,6 +133,10 @@ document.getElementById('leadForm').addEventListener('submit', async function(e)
             throw new Error('Lead request failed');
         }
 
+        if (typeof fbq === 'function') {
+            fbq('track', 'Lead');
+        }
+
         showSuccessState();
     } catch (error) {
         showFinalError('No pudimos enviar tus datos. Intentá nuevamente en unos minutos.');
