@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/generate-landing-config.js",
-    "build:landing": "node scripts/generate-landing-config.js"
+    "build": "node scripts/generate-landing-config.js --optional",
+    "build:landing": "node scripts/generate-landing-config.js --optional",
+    "start": "node server.js"
   }
 }

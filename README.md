@@ -20,7 +20,13 @@ Usar como build command:
 npm run build
 ```
 
-El build genera `config.js` desde variables de entorno. Ese archivo esta ignorado por Git.
+Usar como start command:
+
+```bash
+npm start
+```
+
+El build genera un `config.js` placeholder si Coolify no expone variables durante la fase de build. En produccion, `npm start` sirve `/config.js` dinamicamente desde las variables de entorno runtime del contenedor. Ese archivo esta ignorado por Git.
 
 ## Panel en Coolify
 
